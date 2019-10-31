@@ -267,6 +267,8 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 		// 3、如果未能从缓存中获取到bean,则要重新创建bean
 		else {
 			// 判断指定的原型模式的bean是否当前正在创建(在当前线程内),如果是->则抛出异常(Spring不会解决原型模式bean的循环依赖)
+			// 如果是两个bean，那一个bean是 prototype，一个是single是可以的
+			// 如果两个bean，都是prototype，那就会在这里因为循环依赖问题报错
 			if (isPrototypeCurrentlyInCreation(beanName)) {
 				throw new BeanCurrentlyInCreationException(beanName);
 			}

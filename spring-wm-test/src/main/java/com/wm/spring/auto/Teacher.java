@@ -1,9 +1,11 @@
 package com.wm.spring.auto;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 @Service("teacher")
+@Scope(value = "prototype")
 public class Teacher {
 
 	@Autowired
