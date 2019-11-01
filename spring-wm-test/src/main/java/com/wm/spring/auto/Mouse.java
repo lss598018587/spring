@@ -12,7 +12,7 @@ public class Mouse {
 	private Teacher teacher;
 
 	public void help(){
-		System.out.println("吼叫");
+		System.out.println("吼叫："+this);
 		teacher.test();
 	}
 }

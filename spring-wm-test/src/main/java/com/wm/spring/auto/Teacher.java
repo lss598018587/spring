@@ -5,7 +5,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 @Service("teacher")
-@Scope(value = "prototype")
 public class Teacher {
 
 	@Autowired
@@ -14,7 +13,7 @@ public class Teacher {
 	boolean FLAG = true;
 
 	public void test(){
-		System.out.println("123"+FLAG);
+		System.out.println("123"+FLAG+",class:"+mouse);
 		if(FLAG){
 			FLAG =false;
 			mouse.help();

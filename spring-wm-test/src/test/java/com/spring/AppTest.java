@@ -2,8 +2,10 @@ package com.spring;
 
 import com.wm.spring.LifeCycleBean;
 import com.wm.spring.MyTestBean;
+import com.wm.spring.annotionConfig.Apple;
 import com.wm.spring.auto.Mouse;
 import com.wm.spring.auto.Teacher;
+import com.wm.spring.xmls.Car;
 import org.junit.Test;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
@@ -31,5 +33,17 @@ public class AppTest {
 		ApplicationContext applicationContext = new ClassPathXmlApplicationContext("spring-auto-base.xml");
 		Mouse dog = applicationContext.getBean("mouse", Mouse.class);
 		dog.help();
+	}
+	@Test
+	public void test15() {
+		ApplicationContext applicationContext = new ClassPathXmlApplicationContext("spring-origin-base.xml");
+		Car dog = applicationContext.getBean("car", Car.class);
+		dog.call();
+	}
+	@Test
+	public void test16() {
+		ApplicationContext applicationContext = new ClassPathXmlApplicationContext("spring-annotion-config.xml");
+		Apple dog = applicationContext.getBean("apple", Apple.class);
+		dog.call();
 	}
 }
