@@ -5,6 +5,7 @@ import com.wm.spring.MyTestBean;
 import com.wm.spring.annotionConfig.Apple;
 import com.wm.spring.auto.Mouse;
 import com.wm.spring.auto.Teacher;
+import com.wm.spring.beanFactoryPosts.Teachers;
 import com.wm.spring.xmls.Car;
 import org.junit.Test;
 import org.springframework.beans.factory.BeanFactory;
@@ -46,4 +47,13 @@ public class AppTest {
 		Apple dog = applicationContext.getBean("apple", Apple.class);
 		dog.call();
 	}
+
+	@Test
+	public void test17() throws Exception{
+		ApplicationContext applicationContext = new ClassPathXmlApplicationContext("bean-post-processor-teacher.xml");
+		Teachers teacher = applicationContext.getBean("teachers",Teachers.class);
+		teacher.teach();
+
+	}
+
 }

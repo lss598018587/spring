@@ -85,7 +85,8 @@ class PostProcessorRegistrationDelegate {
 			String[] postProcessorNames =
 					beanFactory.getBeanNamesForType(BeanDefinitionRegistryPostProcessor.class, true, false);
 
-			// First, invoke the BeanDefinitionRegistryPostProcessors that implement PriorityOrdered.
+			// 将获取到的BeanFactoryPostProcessors的bean分类，根据这些bean是否也实现了PriorityOrdered，Ordered这些接口，或者其他，因为我们的例子中
+			// 并没有实现这些接口，所以我们的"springMultiBean"这个在spring-init.xml中（代码见上一节）定义的bean将进入nonOrderedPostProcessorNames.add(ppName)这个代码块
 			List<BeanDefinitionRegistryPostProcessor> priorityOrderedPostProcessors = new ArrayList<>();
 			for (String ppName : postProcessorNames) {
 				if (beanFactory.isTypeMatch(ppName, PriorityOrdered.class)) {
