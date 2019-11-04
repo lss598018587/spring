@@ -163,15 +163,15 @@ final class JdkDynamicAopProxy implements AopProxy, InvocationHandler, Serializa
 
 		try {
 			if (!this.equalsDefined && AopUtils.isEqualsMethod(method)) {
-				// The target does not implement the equals(Object) method itself.
+				// 第一个if是判断如果被代理的目标对象要执行的方法是equal则执行JdkDynamicAopProxy（即代理对象的equal）方法，然后就返回了，也就说spring不对equal方法进行AOP拦截
 				return equals(args[0]);
 			}
 			else if (!this.hashCodeDefined && AopUtils.isHashCodeMethod(method)) {
-				// The target does not implement the hashCode() method itself.
+				// 第二个if是判断如果被代理的目标对象要执行的方法是hashcode则执行JdkDynamicAopProxy（即代理对象的hashcode）方法，随即也返回，同理，spring也不对hashcode进行AOP拦截
 				return hashCode();
 			}
 			else if (method.getDeclaringClass() == DecoratingProxy.class) {
-				// There is only getDecoratedClass() declared -> dispatch to proxy config.
+				// 第三个if是判断如果被代理的对象本身就是实现了Advised接口，也不做处理，直接执行
 				return AopProxyUtils.ultimateTargetClass(this.advised);
 			}
 			else if (!this.advised.opaque && method.getDeclaringClass().isInterface() &&

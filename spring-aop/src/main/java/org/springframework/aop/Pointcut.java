@@ -29,18 +29,23 @@ package org.springframework.aop;
  * @see org.springframework.aop.support.Pointcuts
  * @see org.springframework.aop.support.ClassFilters
  * @see org.springframework.aop.support.MethodMatchers
+ *
+ *
+ *
+ * Pointcut接口的定义非常简单，仅仅包含了ClassFilter和MethodMatcher的定义，
+ * ClassFilter可以定位到具体的类上，MethodMatcher可以定位到具体的方法上，
+ * 这样通过Pointcut我们就可以将将增强织入到特定类的特定方法上了
+ *
  */
 public interface Pointcut {
 
 	/**
-	 * Return the ClassFilter for this pointcut.
-	 * @return the ClassFilter (never {@code null})
+	 * 返回当前切点匹配的类
 	 */
 	ClassFilter getClassFilter();
 
 	/**
-	 * Return the MethodMatcher for this pointcut.
-	 * @return the MethodMatcher (never {@code null})
+	 * 返回当前切点匹配的方法
 	 */
 	MethodMatcher getMethodMatcher();
 
