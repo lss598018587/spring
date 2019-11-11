@@ -290,19 +290,22 @@ public class AspectJExpressionPointcut extends AbstractExpressionPointcut
 
 	@Override
 	public boolean matches(Method method, @Nullable Class<?> targetClass, boolean beanHasIntroductions) {
+		// 1.检查切点表达式,并缓存
 		obtainPointcutExpression();
+		// 1.从目标类中找到与method最匹配的方法
 		Method targetMethod = AopUtils.getMostSpecificMethod(method, targetClass);
+		// 2.获取ShadowMatch对象并缓存 shadowMatch不知道怎么翻译比较好,姑且叫模糊匹配吧
 		ShadowMatch shadowMatch = getShadowMatch(targetMethod, method);
 
-		// Special handling for this, target, @this, @target, @annotation
-		// in Spring - we can optimize since we know we have exactly this class,
-		// and there will never be matching subclass at runtime.
+		// 3.永远匹配,如果切入点表达式将匹配 此模糊匹配 的任何连接点（例如，对给定方法的任何调用），则为true。
 		if (shadowMatch.alwaysMatches()) {
 			return true;
 		}
+		// 4.永远不匹配,如果切入点表达式永远不能匹配此 模糊匹配 的任何连接点（例如，切入点将永远不会匹配对给定方法的调用），则为true。
 		else if (shadowMatch.neverMatches()) {
 			return false;
 		}
+		// 其他匹配:
 		else {
 			// the maybe case
 			if (beanHasIntroductions) {
@@ -439,14 +442,16 @@ public class AspectJExpressionPointcut extends AbstractExpressionPointcut
 				if (shadowMatch == null) {
 					try {
 						try {
+							// 获取切点表达式,并做匹配判断,结果保存到ShadowMatch对象中
 							shadowMatch = obtainPointcutExpression().matchesMethodExecution(methodToMatch);
 						}
 						catch (ReflectionWorldException ex) {
-							// Failed to introspect target method, probably because it has been loaded
-							// in a special ClassLoader. Let's try the declaring ClassLoader instead...
+							// 如果匹配失败,可能是因为使用了特殊的类加载器,则尝试使用该特殊的类加载器替换掉默认的类加载器
 							try {
+								// 尝试通过目标类的类加载器获取切点表达式
 								fallbackExpression = getFallbackPointcutExpression(methodToMatch.getDeclaringClass());
 								if (fallbackExpression != null) {
+									// 再次尝试方法匹配判断
 									shadowMatch = fallbackExpression.matchesMethodExecution(methodToMatch);
 								}
 							}
@@ -454,14 +459,15 @@ public class AspectJExpressionPointcut extends AbstractExpressionPointcut
 								fallbackExpression = null;
 							}
 						}
+						// Proxy.isProxyClass-->当且仅当使用getProxyClass方法或newProxyInstance方法将指定的类动态生成为代理类时，方法才返回true。
 						if (shadowMatch == null && targetMethod != originalMethod) {
+							//在代理类上没有可解析匹配或负匹配(代理类对其重新声明的方法不带任何注释)的情况下，返回到普通的原始方法。
 							methodToMatch = originalMethod;
 							try {
 								shadowMatch = obtainPointcutExpression().matchesMethodExecution(methodToMatch);
 							}
 							catch (ReflectionWorldException ex3) {
-								// Could neither introspect the target class nor the proxy class ->
-								// let's try the original method's declaring class before we give up...
+								// 如果原始方法还是无法做出匹配,那么尝试使用原始方法的类,再次去获取切点表达式,并使用该表达式去匹配
 								try {
 									fallbackExpression = getFallbackPointcutExpression(methodToMatch.getDeclaringClass());
 									if (fallbackExpression != null) {
@@ -479,13 +485,17 @@ public class AspectJExpressionPointcut extends AbstractExpressionPointcut
 						logger.debug("PointcutExpression matching rejected target method", ex);
 						fallbackExpression = null;
 					}
+					// 如果没有得到匹配结果,则默认封装不匹配到ShadowMatchImpl
 					if (shadowMatch == null) {
 						shadowMatch = new ShadowMatchImpl(org.aspectj.util.FuzzyBoolean.NO, null, null, null);
 					}
+					// 如果通过匹配结果无法立即判断当前方法是否与目标方法匹配，就将匹配得到的
+					// ShadowMatch和回调的ShadowMatch封装到DefensiveShadowMatch中
 					else if (shadowMatch.maybeMatches() && fallbackExpression != null) {
 						shadowMatch = new DefensiveShadowMatch(shadowMatch,
 								fallbackExpression.matchesMethodExecution(methodToMatch));
 					}
+					// 缓存结果
 					this.shadowMatchCache.put(targetMethod, shadowMatch);
 				}
 			}

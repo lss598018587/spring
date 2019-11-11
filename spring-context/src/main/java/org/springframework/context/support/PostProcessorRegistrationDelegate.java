@@ -261,7 +261,6 @@ class PostProcessorRegistrationDelegate {
 		}
 		sortPostProcessors(beanFactory, orderedPostProcessors);
 		registerBeanPostProcessors(beanFactory, orderedPostProcessors);
-
 		// Now, register all regular BeanPostProcessors.
 		// 然后,注册无序的BeanPostProcessors
 		List<BeanPostProcessor> nonOrderedPostProcessors = new ArrayList<>();

@@ -10,8 +10,8 @@ public class Dog implements Animal {
 	@Override
 	public void sayException(String name, int age) {
 		System.out.println("==名字：" + name + " 年龄：" + age);
-		if(true){
-			throw new RuntimeException();
-		}
+//		if(true){
+//			throw new RuntimeException();
+//		}
 	}
 }

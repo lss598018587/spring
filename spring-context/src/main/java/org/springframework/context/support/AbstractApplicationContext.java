@@ -537,7 +537,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 
 				// 调用 BeanFactoryPostProcessor 各个实现类的 postProcessBeanFactory(factory) 方法
-				invokeBeanFactoryPostProcessors(beanFactory);
+//				invokeBeanFactoryPostProcessors(beanFactory);
 
 				// 注册 BeanPostProcessor 的实现类，注意看和 BeanFactoryPostProcessor 的区别
 				// 此接口两个方法: postProcessBeforeInitialization 和 postProcessAfterInitialization

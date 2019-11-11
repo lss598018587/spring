@@ -68,31 +68,35 @@ public abstract class AbstractAdvisorAutoProxyCreator extends AbstractAutoProxyC
 	}
 
 
+	/**
+	 * 获取指定bean的增强
+	 */
 	@Override
 	@Nullable
 	protected Object[] getAdvicesAndAdvisorsForBean(Class<?> beanClass, String beanName, @Nullable TargetSource targetSource) {
 		List<Advisor> advisors = findEligibleAdvisors(beanClass, beanName);
+		// 如果获取到的增强是个空的集合,则返回DO_NOT_PROXY-->空数组
 		if (advisors.isEmpty()) {
 			return DO_NOT_PROXY;
 		}
+		// 将获取到的增强转换为数组并返回
 		return advisors.toArray();
 	}
 
 	/**
-	 * Find all eligible Advisors for auto-proxying this class.
-	 * @param beanClass the clazz to find advisors for
-	 * @param beanName the name of the currently proxied bean
-	 * @return the empty List, not {@code null},
-	 * if there are no pointcuts or interceptors
-	 * @see #findCandidateAdvisors
-	 * @see #sortAdvisors
-	 * @see #extendAdvisors
+	 * 为当前bean获取所有需要自动代理的增强
 	 */
 	protected List<Advisor> findEligibleAdvisors(Class<?> beanClass, String beanName) {
+		// 1、查找所有候选增强
 		List<Advisor> candidateAdvisors = findCandidateAdvisors();
+		// 2、从所有增强集合中查找适合当前bean的增强
 		List<Advisor> eligibleAdvisors = findAdvisorsThatCanApply(candidateAdvisors, beanClass, beanName);
+		// 3、在eligibleAdvisors集合首位加入ExposeInvocationInterceptor增强
+		// ExposeInvocationInterceptor的作用是可以将当前的MethodInvocation暴露为一个thread-local对象,该拦截器很少使用
+		// 使用场景:一个切点(例如AspectJ表达式切点)需要知道它的全部调用上线文环境
 		extendAdvisors(eligibleAdvisors);
 		if (!eligibleAdvisors.isEmpty()) {
+			// 4.对增强进行排序
 			eligibleAdvisors = sortAdvisors(eligibleAdvisors);
 		}
 		return eligibleAdvisors;
@@ -108,13 +112,7 @@ public abstract class AbstractAdvisorAutoProxyCreator extends AbstractAutoProxyC
 	}
 
 	/**
-	 * Search the given candidate Advisors to find all Advisors that
-	 * can apply to the specified bean.
-	 * @param candidateAdvisors the candidate Advisors
-	 * @param beanClass the target's bean class
-	 * @param beanName the target's bean name
-	 * @return the List of applicable Advisors
-	 * @see ProxyCreationContext#getCurrentProxiedBeanName()
+	 * 从给定的增强中找出可以应用到当前指定bean的增强
 	 */
 	protected List<Advisor> findAdvisorsThatCanApply(
 			List<Advisor> candidateAdvisors, Class<?> beanClass, String beanName) {
