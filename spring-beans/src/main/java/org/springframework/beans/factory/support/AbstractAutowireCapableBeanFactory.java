@@ -1792,6 +1792,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		// 4、应用bean后置处理器
 		if (mbd == null || !mbd.isSynthetic()) {
 			// BeanPostProcessor 的 postProcessAfterInitialization 回调
+			//wm：AOP代理返回是在这里返回代理对象
 			wrappedBean = applyBeanPostProcessorsAfterInitialization(wrappedBean, beanName);
 		}
 
